@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Task Manager - Live Demo</title>
+    <!-- PyScript CSS & JS for running Python directly in the browser via WebAssembly -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            margin: 0;
+        }
+        .container {
+            max-width: 850px;
+            width: 100%;
+        }
+        h1 {
+            color: #58a6ff;
+            margin-bottom: 0.5rem;
+        }
+        p.subtitle {
+            color: #8b949e;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        /* Style the interactive terminal output */
+        py-terminal {
+            min-height: 450px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            border: 1px solid #30363d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Management System (CLI)</h1>
+        <p class="subtitle">Live PyScript interactive runtime running Python WebAssembly in-browser.</p>
+        
+        <!-- Target terminal container where input() and print() will execute -->
+        <script type="py" terminal>
+import os
+
+def display_menu():
+    """Displays the main menu options to the user."""
+    print("\n--- Task Manager ---")
+    print("1. View Tasks")
+    print("2. Add a Task")
+    print("3. Mark Task as Completed")
+    print("4. Exit")
+
+def view_tasks(tasks):
+    """Displays the current list of tasks and their status."""
+    if not tasks:
+        print("\nNo tasks available. You're all caught up!")
+    else:
+        print("\n--- Your Tasks ---")
+        for index, task in enumerate(tasks, start=1):
+            status = "✓" if task["completed"] else "✗"
+            print(f"{index}. [{status}] {task['name']}")
+
+def add_task(tasks):
+    """Prompts the user to add a new task to the list."""
+    task_name = input("Enter the task description: ").strip()
+    if not task_name:
+        print("\nTask description cannot be empty.")
+        return
+    tasks.append({"name": task_name, "completed": False})
+    print(f"\nTask '{task_name}' added successfully!")
+
+def complete_task(tasks):
+    """Marks a specific task as completed based on user input."""
+    view_tasks(tasks)
+    if tasks:
+        try:
+            task_num = int(input("\nEnter task number to mark as completed: "))
+            if 1 <= task_num <= len(tasks):
+                tasks[task_num - 1]["completed"] = True
+                print("\nTask marked as completed!")
+            else:
+                print("\nInvalid task number.")
+        except ValueError:
+            print("\nPlease enter a valid number.")
+
+def main():
+    """Main function to run the Task Manager application."""
+    tasks = []
+    print("Task Manager initialized successfully.")
+    while True:
+        display_menu()
+        choice = input("Choose an option (1-4): ").strip()
+        
+        if choice == '1':
+            view_tasks(tasks)
+        elif choice == '2':
+            add_task(tasks)
+        elif choice == '3':
+            complete_task(tasks)
+        elif choice == '4':
+            print("\nExiting Task Manager. Refresh the page to start a new session!")
+            break
+        else:
+            print("\nInvalid choice. Please select a valid option.")
+
+main()
+        </script>
+    </div>
+</body>
+</html>
